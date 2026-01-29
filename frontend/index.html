@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retail Analytics Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path
+                        d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span class="brand-text">Retail Analytics</span>
+            </div>
+            <div class="nav-links">
+                <a href="#dashboard" class="nav-link active" data-page="dashboard">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path
+                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="#chatbot" class="nav-link" data-page="chatbot">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path
+                            d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    AI Assistant
+                </a>
+                <a href="#upload" class="nav-link" data-page="upload">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    Upload
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Dashboard Page -->
+        <div id="dashboard-page" class="page active">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon visitors">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path
+                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">Total Visitors</div>
+                        <div class="stat-value" id="total-visitors">0</div>
+                        <div class="stat-change positive" id="visitors-change">+0%</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon queue">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">Queue Length</div>
+                        <div class="stat-value" id="queue-length">0</div>
+                        <div class="stat-badge" id="queue-status">Normal</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon conversion">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">Conversion Rate</div>
+                        <div class="stat-value" id="conversion-rate">0%</div>
+                        <div class="stat-change positive" id="conversion-change">+0%</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon peak">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">Peak Hour</div>
+                        <div class="stat-value" id="peak-hour">--:--</div>
+                        <div class="stat-info" id="busiest-section">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="charts-row">
+                <div class="chart-card">
+                    <div class="card-header">
+                        <h3>Hourly Traffic</h3>
+                        <select id="traffic-period" class="period-select">
+                            <option value="today">Today</option>
+                            <option value="yesterday">Yesterday</option>
+                        </select>
+                    </div>
+                    <canvas id="traffic-chart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="card-header">
+                        <h3>Section Performance</h3>
+                    </div>
+                    <canvas id="section-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Predictions & Recommendations -->
+            <div class="info-row">
+                <div class="info-card">
+                    <div class="card-header">
+                        <h3>Traffic Predictions</h3>
+                        <button class="refresh-btn" onclick="loadPredictions()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path
+                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="predictions-list" class="predictions-list"></div>
+                </div>
+
+                <div class="info-card">
+                    <div class="card-header">
+                        <h3>AI Recommendations</h3>
+                        <span class="badge" id="recommendations-count">0</span>
+                    </div>
+                    <div id="recommendations-list" class="recommendations-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chatbot Page -->
+        <div id="chatbot-page" class="page">
+            <div class="chatbot-container">
+                <div class="chatbot-header">
+                    <h2>AI Assistant</h2>
+                    <div class="language-toggle">
+                        <button class="lang-btn active" data-lang="en">English</button>
+                        <button class="lang-btn" data-lang="ar">العربية</button>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chat-messages">
+                    <div class="welcome-message">
+                        <div class="bot-avatar">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path
+                                    d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </div>
+                        <div class="welcome-text">
+                            <h3>Hello! I'm your AI retail assistant.</h3>
+                            <p>Ask me anything about your store's performance, traffic patterns, or get recommendations
+                                for optimization.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-input-container">
+                    <div class="quick-questions">
+                        <button class="quick-btn"
+                            onclick="sendQuickQuestion('What is the current store status?')">Current Status</button>
+                        <button class="quick-btn" onclick="sendQuickQuestion('Which section needs attention?')">Section
+                            Analysis</button>
+                        <button class="quick-btn" onclick="sendQuickQuestion('What are the peak hours today?')">Peak
+                            Hours</button>
+                    </div>
+                    <div class="chat-input-wrapper">
+                        <input type="text" id="chat-input" placeholder="Ask me anything about your store..." />
+                        <button id="send-btn" onclick="sendMessage()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Page -->
+        <div id="upload-page" class="page">
+            <div class="upload-container">
+                <div class="upload-card">
+                    <h2>Upload Video Sources</h2>
+                    <p class="upload-description">Upload videos from your store cameras for analysis</p>
+
+                    <div class="upload-zone" id="upload-zone">
+                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path
+                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <h3>Drop video files here</h3>
+                        <p>or click to browse</p>
+                        <input type="file" id="file-input" accept="video/*" multiple hidden />
+                    </div>
+
+                    <div class="upload-options">
+                        <div class="form-group">
+                            <label for="video-role">Camera Role</label>
+                            <select id="video-role" class="form-select">
+                                <option value="entrance">Entrance Camera</option>
+                                <option value="section">Section Camera</option>
+                                <option value="cashier">Cashier Camera</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="section-name-group" style="display: none;">
+                            <label for="section-name">Section Name</label>
+                            <input type="text" id="section-name" class="form-input"
+                                placeholder="e.g., Men's Clothing" />
+                        </div>
+                    </div>
+
+                    <div id="upload-progress" class="upload-progress" style="display: none;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-fill"></div>
+                        </div>
+                        <p id="progress-text">Uploading...</p>
+                    </div>
+                </div>
+
+                <div class="videos-list-card">
+                    <h3>Uploaded Videos</h3>
+                    <div id="videos-list" class="videos-list"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

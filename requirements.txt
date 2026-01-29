@@ -1,0 +1,35 @@
+# FastAPI and Web Framework
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+python-multipart==0.0.6
+pydantic==2.5.3
+pydantic-settings==2.1.0
+
+# Database
+psycopg2-binary==2.9.9
+sqlalchemy==2.0.25
+
+# Computer Vision
+opencv-python==4.9.0.80
+opencv-contrib-python==4.9.0.80
+ultralytics==8.1.11
+numpy==1.26.3
+pillow==10.2.0
+deepface==0.0.87
+tf-keras==2.16.0
+tensorflow==2.16.1
+
+# AI and ML
+groq>=0.11.0
+prophet==1.1.5
+scikit-learn==1.4.0
+pandas==2.2.0
+matplotlib==3.8.2
+seaborn==0.13.1
+
+# Utilities
+python-dotenv==1.0.0
+requests==2.31.0
+aiofiles==23.2.1
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
