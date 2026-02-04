@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Camera Feed - Retail Analytics</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        .container {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 800px;
+            width: 100%;
+        }
+        .video-container {
+            width: 100%;
+            height: auto;
+            background-color: #000;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            position: relative;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        img#videoFeed {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .controls {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            align-items: center;
+        }
+        select {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: #333;
+            color: white;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .status {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Live Camera Feed</h1>
+
+    <div class="container">
+        <div class="video-container">
+            <!-- Default source usually "Entrance Camera" -->
+            <img id="videoFeed" src="/api/video_feed/Entrance Camera" alt="Loading video stream...">
+        </div>
+
+        <div class="controls">
+            <select id="sourceSelect">
+                <option value="Entrance Camera">Entrance Camera</option>
+                <!-- Other options can be added dynamically or manually if known -->
+                <option value="Cashier Camera">Cashier Camera</option>
+            </select>
+            <button onclick="refreshFeed()">Refresh Feed</button>
+        </div>
+        
+        <div class="status">
+            Showing real-time analysis from Computer Vision Module
+        </div>
+    </div>
+
+    <script>
+        const videoFeed = document.getElementById('videoFeed');
+        const sourceSelect = document.getElementById('sourceSelect');
+
+        // Update feed when selection changes
+        sourceSelect.addEventListener('change', function() {
+            const sourceName = this.value;
+            // Add timestamp to prevent caching
+            videoFeed.src = `/api/video_feed/${sourceName}?t=${new Date().getTime()}`;
+        });
+
+        function refreshFeed() {
+            const currentSrc = videoFeed.src.split('?')[0];
+            videoFeed.src = `${currentSrc}?t=${new Date().getTime()}`;
+        }
+        
+        // Error handling for image
+        videoFeed.onerror = function() {
+            this.alt = "Feed unavailable. Is the system running?";
+            // Try to reconnect every 2 seconds
+            setTimeout(refreshFeed, 2000);
+        };
+    </script>
+</body>
+</html>

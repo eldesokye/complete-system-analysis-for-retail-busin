@@ -206,6 +206,11 @@ def main():
     
     # Create and run system
     system = RetailAnalyticsSystem()
+    
+    # Inject video processor into API
+    import api.dependencies
+    api.dependencies.video_processor_instance = system.video_processor
+    
     system.run()
 
 

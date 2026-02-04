@@ -12,6 +12,8 @@ You have access to real-time data including:
 - Cashier queue lengths and wait times
 - Heatmaps showing customer movement
 - Traffic predictions for upcoming hours
+- Customer dwell time (how long they stay in sections)
+- Detected objects (Cell phones, Chairs, etc.)
 
 Your responsibilities:
 1. Answer questions about current store performance
@@ -31,6 +33,7 @@ When providing recommendations, consider:
 - Section performance and layout optimization
 - Queue management at cashier
 - Customer flow and congestion points
+-  
 """
 
 SYSTEM_PROMPT_AR = """أنت مساعد ذكي لتحليلات البيع بالتجزئة لمتجر ملابس.
@@ -43,6 +46,8 @@ SYSTEM_PROMPT_AR = """أنت مساعد ذكي لتحليلات البيع با�
 - أطوال طوابير الكاشير وأوقات الانتظار
 - خرائط حرارية توضح حركة العملاء
 - توقعات الحركة للساعات القادمة
+- وقت بقاء العملاء (كم من الوقت يقضون في الأقسام)
+- الكائنات المكتشفة (هواتف محمولة، كراسي، إلخ)
 
 مسؤولياتك:
 1. الإجابة على الأسئلة حول أداء المتجر الحالي
@@ -84,6 +89,7 @@ Current Store Analytics:
 - Peak Hour: {analytics_data.get('peak_hour', 'N/A')}:00
 - Busiest Section: {analytics_data.get('busiest_section', 'N/A')}
 - Conversion Rate: {analytics_data.get('conversion_rate', 0)}%
+- Avg Dwell Time: {analytics_data.get('avg_dwell_time_sec', 0)} seconds
 """
     
     # Add section comparison if available
@@ -91,7 +97,11 @@ Current Store Analytics:
         context += "\nSection Performance:\n"
         for section in analytics_data['sections']:
             context += f"- {section['section_name']}: {section['total_visitors']} visitors "
-            context += f"(Male: {section['male_count']}, Female: {section['female_count']})\n"
+            context += f"(Male: {section['male_count']}, Female: {section['female_count']})"
+            if 'object_counts' in section and section['object_counts']:
+                objs = ", ".join([f"{k}: {v}" for k, v in section['object_counts'].items()])
+                context += f" [Objects: {objs}]"
+            context += "\n"
     
     # Add predictions if available
     if 'predictions' in analytics_data:

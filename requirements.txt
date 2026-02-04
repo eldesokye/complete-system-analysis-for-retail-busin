@@ -33,3 +33,7 @@ requests==2.31.0
 aiofiles==23.2.1
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
+
+# Tunneling
+pyngrok==7.1.0
+pycloudflared==0.2.0

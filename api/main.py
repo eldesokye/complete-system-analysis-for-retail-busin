@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 import os
 import logging
 
-from api.routes import analytics, chatbot, predictions, upload
+from api.routes import analytics, chatbot, predictions, upload, video_feed
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -36,12 +36,12 @@ if os.path.exists("uploads"):
     app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 
-
 # Include routers
 app.include_router(analytics.router, prefix="/api/analytics", tags=["Analytics"])
 app.include_router(chatbot.router, prefix="/api/chatbot", tags=["Chatbot"])
 app.include_router(predictions.router, prefix="/api/predictions", tags=["Predictions"])
 app.include_router(upload.router, prefix="/api/upload", tags=["Upload"])
+app.include_router(video_feed.router, prefix="/api/video_feed", tags=["Video Feed"])
 
 
 

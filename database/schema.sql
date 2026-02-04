@@ -26,7 +26,23 @@ CREATE TABLE section_analytics (
     visitor_count INTEGER NOT NULL,
     male_count INTEGER DEFAULT 0,
     female_count INTEGER DEFAULT 0,
+    female_count INTEGER DEFAULT 0,
+    object_counts JSONB, -- Stores {"cell phone": 2, "chair": 5}
     heatmap_data JSONB,
+    date DATE NOT NULL,
+    hour INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+-- Customer Dwell Time table (Detailed tracking)
+CREATE TABLE customer_dwell_time (
+    id SERIAL PRIMARY KEY,
+    track_id INTEGER NOT NULL,
+    section_name VARCHAR(100) NOT NULL,
+    entry_time TIMESTAMP NOT NULL,
+    exit_time TIMESTAMP,
+    duration_seconds FLOAT,
     date DATE NOT NULL,
     hour INTEGER NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -44,6 +60,10 @@ CREATE TABLE cashier_analytics (
     hour INTEGER NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Add index for dwell time
+CREATE INDEX idx_dwell_date_hour ON customer_dwell_time(date, hour);
+CREATE INDEX idx_dwell_section ON customer_dwell_time(section_name);
 
 -- Traffic Predictions table
 CREATE TABLE traffic_predictions (

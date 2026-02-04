@@ -49,6 +49,9 @@ class AnalyticsAggregator:
             
             # Get conversion rate
             conversion_rate = self.db_manager.get_conversion_rate()
+
+            # Get average dwell time
+            avg_dwell = self.db_manager.get_average_dwell_time(date_val=date.today())
             
             return {
                 'total_visitors': total_visitors,
@@ -58,6 +61,7 @@ class AnalyticsAggregator:
                 'peak_hour': peak_hour,
                 'busiest_section': busiest_section,
                 'conversion_rate': round(conversion_rate * 100, 2),
+                'avg_dwell_time_sec': round(avg_dwell, 1),
                 'timestamp': datetime.now()
             }
         
@@ -113,6 +117,16 @@ class AnalyticsAggregator:
                 section_totals[section_name]['total_visitors'] += record['visitor_count']
                 section_totals[section_name]['male_count'] += record.get('male_count', 0)
                 section_totals[section_name]['female_count'] += record.get('female_count', 0)
+                
+                # Aggregate object counts
+                if record.get('object_counts'):
+                    # Ensure it's a dict (psycopg2 might return string/dict depending on version/config)
+                    # Helper assumes it's dict-like
+                    objs = record['object_counts']
+                    current_objs = section_totals[section_name].get('object_counts', {})
+                    for obj_name, count in objs.items():
+                        current_objs[obj_name] = current_objs.get(obj_name, 0) + count
+                    section_totals[section_name]['object_counts'] = current_objs
             
             return sorted(
                 section_totals.values(),

@@ -104,18 +104,18 @@ class DatabaseManager:
     # ==================== Section Analytics Operations ====================
     
     def insert_section_analytics(self, section_name: str, visitor_count: int, male_count: int,
-                                 female_count: int, heatmap_data: Dict, timestamp: datetime,
+                                 female_count: int, heatmap_data: Dict, object_counts: Dict, timestamp: datetime,
                                  date_val: date, hour: int):
         """Insert section analytics data"""
         query = """
             INSERT INTO section_analytics 
-            (section_name, visitor_count, male_count, female_count, heatmap_data, timestamp, date, hour)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            (section_name, visitor_count, male_count, female_count, heatmap_data, object_counts, timestamp, date, hour)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             RETURNING id
         """
         result = self.execute_query(
             query,
-            (section_name, visitor_count, male_count, female_count, Json(heatmap_data), timestamp, date_val, hour),
+            (section_name, visitor_count, male_count, female_count, Json(heatmap_data), Json(object_counts), timestamp, date_val, hour),
             fetch=True
         )
         return result[0]['id'] if result else None
@@ -269,6 +269,45 @@ class DatabaseManager:
             return result[0]['total_transactions'] / result[0]['total_visitors']
         return 0.0
     
+    def insert_dwell_time(self, track_id: int, section_name: str, entry_time: datetime,
+                         exit_time: datetime, duration_seconds: float, date_val: date, hour: int):
+        """Insert customer dwell time record"""
+        query = """
+            INSERT INTO customer_dwell_time 
+            (track_id, section_name, entry_time, exit_time, duration_seconds, date, hour)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            RETURNING id
+        """
+        result = self.execute_query(
+            query,
+            (track_id, section_name, entry_time, exit_time, duration_seconds, date_val, hour),
+            fetch=True
+        )
+        return result[0]['id'] if result else None
+
+    def get_average_dwell_time(self, section_name: Optional[str] = None, date_val: date = None) -> float:
+        """Get average dwell time in seconds"""
+        if date_val is None:
+            date_val = date.today()
+            
+        if section_name:
+            query = """
+                SELECT AVG(duration_seconds) as avg_duration 
+                FROM customer_dwell_time 
+                WHERE date = %s AND section_name = %s
+            """
+            params = (date_val, section_name)
+        else:
+            query = """
+                SELECT AVG(duration_seconds) as avg_duration 
+                FROM customer_dwell_time 
+                WHERE date = %s
+            """
+            params = (date_val,)
+            
+        result = self.execute_query(query, params)
+        return result[0]['avg_duration'] if result and result[0]['avg_duration'] else 0.0
+
     def close(self):
         """Close all connections in the pool"""
         if self.pool:
