@@ -10,8 +10,8 @@ psycopg2-binary==2.9.9
 sqlalchemy==2.0.25
 
 # Computer Vision
-opencv-python==4.9.0.80
-opencv-contrib-python==4.9.0.80
+opencv-python-headless==4.9.0.80
+opencv-contrib-python-headless==4.9.0.80
 ultralytics==8.1.11
 numpy==1.26.3
 pillow==10.2.0

@@ -11,6 +11,11 @@ WORKDIR /app
 
 # Copy requirements first for caching
 COPY requirements.txt .
+
+# Install CPU-only versions of PyTorch first to avoid downloading huge CUDA wheels
+RUN pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu
+
+# Install dependencies interactively to avoid timeouts, and use headless OpenCV
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application
