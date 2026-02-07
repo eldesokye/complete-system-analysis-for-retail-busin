@@ -1,10 +1,12 @@
-FROM python:3.10-slim
+FROM python:3.10-slim-bookworm
 
-# Install system dependencies for OpenCV and other potential needs
+# Install system dependencies
+# libgl1-mesa-glx is NOT needed for opencv-python-headless
 RUN apt-get update && apt-get install -y \
-    libgl1-mesa-glx \
     libglib2.0-0 \
     build-essential \
+    && rm -rf /var/lib/apt/lists/*
+build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
