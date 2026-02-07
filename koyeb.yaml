@@ -1,0 +1,17 @@
+type: web
+name: retail-analytics-system
+env:
+  PORT: 8000
+  PYTHON_VERSION: 3.10.0
+  DISABLE_CV: "true"
+  SEED_DB: "false"
+  # Set these in Koyeb Dashboard Secrets
+  # DATABASE_URL: ...
+  # GROQ_API_KEY: ...
+port: 8000
+routes:
+  - path: /
+    port: 8000
+build:
+  docker:
+    dockerfile: Dockerfile

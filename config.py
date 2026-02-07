@@ -1,6 +1,7 @@
 from __future__ import annotations
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Optional
+import os
 
 
 class Settings(BaseSettings):
@@ -19,12 +20,15 @@ class Settings(BaseSettings):
     
     # Application Configuration
     APP_HOST: str = "0.0.0.0"
-    APP_PORT: int = 8000
+    APP_PORT: int = int(os.environ.get("PORT", 8000))
     DEBUG: bool = True
     
     # Video Sources
     WEBCAM_INDEX: int = 0
     VIDEO_UPLOAD_DIR: str = "./uploads/videos"
+    
+    # Feature Flags
+    DISABLE_CV: bool = False
     
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -35,6 +39,11 @@ class Settings(BaseSettings):
     @property
     def database_url(self) -> str:
         """Get PostgreSQL connection URL"""
+        # If DATABASE_URL env var is set (e.g. on Render), use it
+        import os
+        if os.getenv("DATABASE_URL"):
+            return os.getenv("DATABASE_URL")
+            
         return f"postgresql://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
 

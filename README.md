@@ -1,4 +1,51 @@
-# Retail Analytics System - Computer Vision AI
+## Deployment to Koyeb
+
+This application is ready for deployment on [Koyeb](https://koyeb.com) as a Dockerized service.
+
+### Prerequisites
+- A Koyeb account.
+- A Neon PostgreSQL database (or other PostgreSQL provider).
+
+### Steps
+1.  **Database Setup**:
+    - Create a database on Neon.
+    - Copy the Connection String (DSN). Ensure it includes `sslmode=require`.
+
+2.  **Deploy on Koyeb**:
+    - Push your code to GitHub.
+    - Go to the Koyeb Dashboard and create a **New App**.
+    - Select **GitHub** as the source and choose this repository.
+    - **Builder**: Choose **Docker**.
+    - **Privileged**: No.
+
+3.  **Environment Variables**:
+    Add the following environment variables in the Koyeb setup screen:
+    - `DATABASE_URL`: Your Neon connection string.
+    - `GROQ_API_KEY`: Your AI API key.
+    - `DISABLE_CV`: `true` (Recommended to disable heavy CV loop for API-only hosting).
+    - `SEED_DB`: `true` (Optional: set to true for first run to seed demo data).
+    - `PORT`: `8000` (Koyeb should detect the EXPOSE 8000 in Dockerfile, but setting it explicitly is safe).
+
+4.  **Health Checks**:
+    - Configure the health check path to `/healthz`.
+    - Port: `8000`.
+
+5.  **Exposed Ports**:
+    - Ensure Port `8000` is exposed as `ublic`.
+
+6.  **Verification**:
+    - Wait for the build and deployment.
+    - Visit your App URL (e.g., `https://retail-analytics.koyeb.app/healthz`).
+    - Use this URL as your **API Base URL** in your Flutter app.
+
+### Flutter Integration
+For your Flutter application, use the deployed URL:
+```dart
+const String baseUrl = "https://<your-app-name>.koyeb.app";
+```
+
+---
+
 
 A comprehensive retail analytics system powered by computer vision and AI to analyze customer behavior, optimize store operations, and provide intelligent business insights.
 

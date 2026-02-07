@@ -35,14 +35,11 @@ class DatabaseManager:
         """Create connection pool"""
         try:
             settings = get_settings()
+            # Use connection string (DSN) for flexibility (supports Neon, Render, etc.)
             self.pool = SimpleConnectionPool(
                 minconn=1,
                 maxconn=10,
-                host=settings.DB_HOST,
-                database=settings.DB_NAME,
-                user=settings.DB_USER,
-                password=settings.DB_PASSWORD,
-                port=settings.DB_PORT
+                dsn=settings.database_url
             )
             logger.info("Database connection pool created successfully")
         except Exception as e:

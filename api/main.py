@@ -51,6 +51,11 @@ async def health_check():
     """Health check endpoint"""
     return {"status": "healthy"}
 
+@app.get("/healthz")
+async def healthz():
+    """Kubernetes/Render health check"""
+    return {"status": "ok"}
+
 
 # Mount frontend at root (must be last)
 if os.path.exists("frontend"):

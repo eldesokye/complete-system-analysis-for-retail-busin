@@ -147,11 +147,14 @@ class RetailAnalyticsSystem:
             self.setup_video_sources()
             
             # Start CV processing
-            if self.video_processor.sources:
-                self.start_cv_processing()
+            if not settings.DISABLE_CV:
+                if self.video_processor.sources:
+                    self.start_cv_processing()
+                else:
+                    logger.warning("No video sources available. CV processing will not start.")
+                    logger.info("You can upload videos using the API at /api/upload/video")
             else:
-                logger.warning("No video sources available. CV processing will not start.")
-                logger.info("You can upload videos using the API at /api/upload/video")
+                logger.info("CV processing disabled by configuration (DISABLE_CV=True)")
             
             # Start API server
             self.start_api_server()
