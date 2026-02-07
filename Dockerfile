@@ -28,4 +28,9 @@ ENV PYTHONUNBUFFERED=1
 EXPOSE 8000
 
 # Run the application
-CMD ["python", "main.py"]
+# Copy startup script
+COPY start.sh .
+RUN chmod +x start.sh
+
+# Run the application via startup script
+CMD ["./start.sh"]
