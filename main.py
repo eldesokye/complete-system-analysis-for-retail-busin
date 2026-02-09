@@ -24,7 +24,7 @@ warnings.filterwarnings("ignore", category=UserWarning, module="pydantic")
 
 from config import settings
 from database import get_db_manager
-from cv_module import VideoProcessor
+
 from analytics import AnalyticsAggregator, TrafficPredictor
 
 logging.basicConfig(
@@ -44,82 +44,6 @@ class RetailAnalyticsSystem:
         # Get database manager
         self.db_manager = get_db_manager()
         
-        # Initialize video processor
-        self.video_processor = VideoProcessor(self.db_manager)
-        
-        # Initialize analytics
-        self.analytics_aggregator = AnalyticsAggregator(self.db_manager)
-        self.traffic_predictor = TrafficPredictor(self.db_manager)
-        
-        # Server thread
-        self.server_thread = None
-        
-        logger.info("System initialized successfully")
-    
-    def setup_video_sources(self):
-        """Set up video sources (webcam and uploaded videos)"""
-        logger.info("Setting up video sources...")
-        
-        # Add webcam as entrance camera
-        webcam_added = self.video_processor.add_source(
-            source_id=settings.WEBCAM_INDEX,
-            source_type="webcam",
-            name="Entrance Camera",
-            role="entrance"
-        )
-        
-        if webcam_added:
-            logger.info("Webcam added as entrance camera")
-        else:
-            logger.warning("Failed to add webcam. Make sure a camera is connected.")
-        
-        # Check for uploaded videos
-        import os
-        video_dir = settings.VIDEO_UPLOAD_DIR
-        
-        if os.path.exists(video_dir):
-            video_files = [f for f in os.listdir(video_dir) if f.endswith(('.mp4', '.avi', '.mov'))]
-            
-            for video_file in video_files:
-                video_path = os.path.join(video_dir, video_file)
-                
-                # Determine role from filename
-                if 'entrance' in video_file.lower():
-                    role = 'entrance'
-                    name = 'Entrance Video'
-                elif 'cashier' in video_file.lower():
-                    role = 'cashier'
-                    name = 'Cashier Video'
-                else:
-                    role = 'section'
-                    # Extract section name from filename
-                    name = video_file.split('_')[1] if '_' in video_file else 'Section Video'
-                
-                self.video_processor.add_source(
-                    source_id=video_path,
-                    source_type="video",
-                    name=name,
-                    role=role
-                )
-                
-                logger.info(f"Added video source: {name} ({video_file})")
-    
-    def start_cv_processing(self):
-        """Start computer vision processing for all sources"""
-        logger.info("Starting CV processing...")
-        
-        for source_name, source in self.video_processor.sources.items():
-            # Determine role based on source name
-            if 'entrance' in source_name.lower():
-                role = 'entrance'
-            elif 'cashier' in source_name.lower():
-                role = 'cashier'
-            else:
-                role = 'section'
-            
-            self.video_processor.start_processing(source_name, role)
-        
-        logger.info("CV processing started for all sources")
     
     def start_api_server(self):
         """Start FastAPI server in a separate thread"""
@@ -143,19 +67,6 @@ class RetailAnalyticsSystem:
     def run(self):
         """Run the complete system"""
         try:
-            # Setup video sources
-            self.setup_video_sources()
-            
-            # Start CV processing
-            if not settings.DISABLE_CV:
-                if self.video_processor.sources:
-                    self.start_cv_processing()
-                else:
-                    logger.warning("No video sources available. CV processing will not start.")
-                    logger.info("You can upload videos using the API at /api/upload/video")
-            else:
-                logger.info("CV processing disabled by configuration (DISABLE_CV=True)")
-            
             # Start API server
             self.start_api_server()
             
@@ -180,10 +91,7 @@ class RetailAnalyticsSystem:
             self.shutdown()
     
     def shutdown(self):
-        """Gracefully shutdown the system"""
-        logger.info("Stopping CV processing...")
-        self.video_processor.stop_all()
-        
+        """"Gracefully shutdown the system"""
         logger.info("Closing database connections...")
         self.db_manager.close()
         
@@ -209,10 +117,6 @@ def main():
     
     # Create and run system
     system = RetailAnalyticsSystem()
-    
-    # Inject video processor into API
-    import api.dependencies
-    api.dependencies.video_processor_instance = system.video_processor
     
     system.run()
 

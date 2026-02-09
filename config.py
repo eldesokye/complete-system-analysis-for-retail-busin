@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     VIDEO_UPLOAD_DIR: str = "./uploads/videos"
     
     # Feature Flags
-    DISABLE_CV: bool = False
+    DISABLE_CV: bool = True
     
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -44,7 +44,8 @@ class Settings(BaseSettings):
         if os.getenv("DATABASE_URL"):
             return os.getenv("DATABASE_URL")
             
-        return f"postgresql://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+        from urllib.parse import quote_plus
+        return f"postgresql://{quote_plus(self.DB_USER)}:{quote_plus(self.DB_PASSWORD)}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
 
 # Global settings instance

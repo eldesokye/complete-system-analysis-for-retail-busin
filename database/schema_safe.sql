@@ -98,6 +98,7 @@ CREATE INDEX IF NOT EXISTS idx_recommendations_active ON recommendations(is_acti
 CREATE INDEX IF NOT EXISTS idx_recommendations_timestamp ON recommendations(timestamp);
 
 -- Create a view for daily summaries
+DROP VIEW IF EXISTS daily_summary;
 CREATE OR REPLACE VIEW daily_summary AS
 SELECT 
     date,
@@ -109,6 +110,7 @@ GROUP BY date
 ORDER BY date DESC;
 
 -- Create a view for section performance
+DROP VIEW IF EXISTS section_performance;
 CREATE OR REPLACE VIEW section_performance AS
 SELECT 
     section_name,
